@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="description" content="40 题趣味人格测试：测测你在宫廷剧里能活多久。结果仅供娱乐，不是历史考试，也不是心理诊断。">
+<title>测测你在宫廷剧能活多久 · 趣味人格测试</title>
+<style>
+  :root{
+    --bg:#f3ead8;
+    --ink:#2a211c;
+    --ink-soft:#6b5f53;
+    --red:#a63d2f;
+    --red-deep:#7e2a20;
+    --gold:#b98a3f;
+    --gold-soft:#d8b878;
+    --paper:#fbf6ea;
+    --paper-2:#fffdf6;
+    --line:#d8c9a8;
+    --accent:#a63d2f;
+    --serif:"Noto Serif SC","Source Han Serif SC","Songti SC","STSong","SimSun",serif;
+    --kai:"Kaiti SC","STKaiti","KaiTi","Noto Serif SC",serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  html,body{min-height:100%}
+  body{
+    font-family:var(--serif);
+    color:var(--ink);
+    background:
+      radial-gradient(900px 480px at 50% -120px, rgba(185,138,63,.20), transparent 62%),
+      radial-gradient(700px 500px at 110% 110%, rgba(166,61,47,.08), transparent 60%),
+      linear-gradient(180deg,#f6eedd 0%,#efe4cd 100%);
+    background-attachment:fixed;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding:24px 16px 64px;
+  }
+  .page{width:100%;max-width:560px}
+  .screen{display:none}
+  .screen.active{display:block;animation:rise .5s cubic-bezier(.22,.9,.36,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:none}}
+
+  /* ---------- 首页 ---------- */
+  .hero{text-align:center;padding:48px 8px 28px}
+  .hero .seal-big{
+    width:84px;height:84px;border-radius:16px;margin:0 auto 22px;
+    background:linear-gradient(150deg,var(--red),var(--red-deep));
+    color:#fdf6e3;display:flex;align-items:center;justify-content:center;
+    font-size:44px;font-weight:700;font-family:var(--kai);
+    box-shadow:inset 0 0 0 4px rgba(255,255,255,.22), 0 10px 26px rgba(126,42,32,.30);
+    transform:rotate(-6deg);
+  }
+  .hero h1{
+    font-size:30px;line-height:1.35;letter-spacing:2px;font-weight:800;
+    background:linear-gradient(120deg,var(--red-deep),#b0452e 40%,var(--gold) 90%);
+    -webkit-background-clip:text;background-clip:text;color:transparent;
+  }
+  .hero .sub{margin-top:12px;font-size:15px;color:var(--ink-soft);letter-spacing:1px}
+  .hero .meta{
+    margin:22px auto 0;display:flex;justify-content:center;gap:10px;flex-wrap:wrap;
+  }
+  .hero .meta span{
+    font-size:12.5px;color:var(--ink-soft);border:1px solid var(--line);
+    background:rgba(255,253,246,.6);padding:6px 12px;border-radius:999px;
+  }
+  .btn{
+    cursor:pointer;border:none;border-radius:999px;font-family:inherit;
+    font-size:17px;letter-spacing:2px;font-weight:700;color:#fdf6e3;
+    background:linear-gradient(120deg,var(--red),var(--red-deep));
+    padding:15px 40px;box-shadow:0 8px 22px rgba(126,42,32,.28);
+    transition:transform .16s, box-shadow .16s;
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(126,42,32,.34)}
+  .btn:active{transform:translateY(0)}
+  .btn.ghost{background:transparent;color:var(--ink-soft);box-shadow:none;border:1px solid var(--line);background:rgba(255,253,246,.5)}
+  .hero .start{margin-top:30px;display:inline-block}
+
+  /* ---------- 答题页 ---------- */
+  .quiz-head{display:flex;align-items:center;justify-content:space-between;margin:8px 0 14px}
+  .quiz-head .qn{font-size:14px;color:var(--ink-soft);letter-spacing:1px}
+  .quiz-head .qn b{color:var(--red);font-size:16px}
+  .progress{height:8px;background:#e4d6ba;border-radius:999px;overflow:hidden}
+  .progress > i{
+    display:block;height:100%;width:0;
+    background:linear-gradient(90deg,var(--red),var(--gold));
+    border-radius:999px;transition:width .45s cubic-bezier(.22,.9,.36,1);
+  }
+  .qcard{
+    margin-top:18px;background:var(--paper);border:1px solid var(--gold-soft);
+    border-radius:18px;padding:24px 20px;box-shadow:0 10px 30px rgba(42,33,28,.08);
+    position:relative;
+  }
+  .qcard::before{content:"";position:absolute;inset:7px;border:1px solid var(--line);border-radius:12px;pointer-events:none}
+  .qcard .cat{font-size:12px;color:var(--gold);letter-spacing:3px;margin-bottom:10px}
+  .qcard .qtext{font-size:19px;line-height:1.6;font-weight:700}
+  .opts{margin-top:20px;display:flex;flex-direction:column;gap:12px}
+  .option{
+    display:flex;align-items:center;gap:12px;width:100%;
+    padding:15px 16px;border:1px solid var(--line);border-radius:14px;
+    background:var(--paper-2);cursor:pointer;text-align:left;
+    font-family:inherit;font-size:15.5px;line-height:1.5;color:var(--ink);
+    transition:transform .15s, border-color .15s, background .15s, box-shadow .15s;
+  }
+  .option:hover{transform:translateY(-2px);border-color:var(--gold)}
+  .option .key{
+    flex:0 0 30px;height:30px;border-radius:9px;background:#f0e6cf;color:var(--red-deep);
+    display:flex;align-items:center;justify-content:center;font-weight:800;font-size:14px;
+    transition:background .15s,color .15s;
+  }
+  .option.selected{border-color:var(--red);background:#fbeee8;box-shadow:0 6px 16px rgba(166,61,47,.16)}
+  .option.selected .key{background:var(--red);color:#fff}
+  .quiz-foot{margin-top:18px;display:flex;justify-content:space-between;gap:12px}
+  .quiz-foot .btn{padding:12px 26px;font-size:15px}
+
+  /* ---------- 结果页 ---------- */
+  .result-card{
+    background:var(--paper);border:1px solid var(--gold-soft);border-radius:20px;
+    padding:30px 22px 26px;box-shadow:0 16px 44px rgba(42,33,28,.14);position:relative;
+    overflow:hidden;
+  }
+  .result-card::before{content:"";position:absolute;inset:9px;border:1px solid var(--line);border-radius:14px;pointer-events:none;z-index:1}
+  .result-card > *{position:relative;z-index:2}
+  .r-top{text-align:center}
+  .r-top .seal{
+    width:78px;height:78px;border-radius:14px;margin:0 auto 16px;
+    background:var(--accent);
+    background:linear-gradient(150deg,var(--accent),color-mix(in srgb,var(--accent) 72%, #000));
+    color:#fdf6e3;display:flex;align-items:center;justify-content:center;
+    font-size:40px;font-weight:700;font-family:var(--kai);
+    box-shadow:inset 0 0 0 4px rgba(255,255,255,.22), 0 10px 24px rgba(42,33,28,.22);
+    transform:rotate(-6deg);
+  }
+  .r-top .badge{font-size:13px;letter-spacing:4px;color:var(--gold);margin-bottom:8px}
+  .r-top h2{font-size:27px;letter-spacing:2px;font-weight:800}
+  .r-top .archetype{margin-top:6px;font-size:14px;color:var(--ink-soft)}
+  .episodes{
+    margin:18px auto 0;display:inline-block;padding:9px 20px;border-radius:999px;
+    background:rgba(185,138,63,.12);border:1px solid var(--gold-soft);
+    color:var(--red-deep);font-size:14px;letter-spacing:1px;
+  }
+  .tagline{
+    margin:22px 0 0;padding:16px 14px;border-radius:12px;background:rgba(185,138,63,.09);
+    font-family:var(--kai);font-size:17.5px;line-height:1.7;color:var(--red-deep);
+    text-align:center;
+  }
+  .match{margin-top:18px;text-align:center;font-size:13.5px;color:var(--ink-soft)}
+  .match b{color:var(--red);font-size:15px}
+
+  .dims{margin-top:22px}
+  .dims h3, .sec h3{
+    font-size:14px;letter-spacing:3px;color:var(--gold);margin-bottom:14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .dims h3::after,.sec h3::after{content:"";flex:1;height:1px;background:var(--line)}
+  .dim-row{display:flex;align-items:center;gap:10px;margin-bottom:11px}
+  .dim-row .dn{flex:0 0 46px;font-size:13.5px;color:var(--ink-soft);text-align:right}
+  .dim-row .bar{flex:1;height:10px;background:#e9dcc1;border-radius:999px;overflow:hidden}
+  .dim-row .bar > i{display:block;height:100%;width:0;border-radius:999px;transition:width 1s cubic-bezier(.22,.9,.36,1)}
+  .dim-row .dv{flex:0 0 34px;font-size:12.5px;color:var(--ink-soft)}
+
+  .sec{margin-top:24px}
+  .sec .reason{font-size:15px;line-height:1.9;color:var(--ink)}
+  .chips{display:flex;flex-wrap:wrap;gap:8px}
+  .chips span{font-size:13px;color:var(--ink);background:var(--paper-2);border:1px solid var(--line);border-radius:999px;padding:6px 12px}
+  .list{list-style:none}
+  .list li{position:relative;padding-left:20px;margin-bottom:9px;font-size:14.5px;line-height:1.6;color:var(--ink)}
+  .list li::before{content:"";position:absolute;left:2px;top:9px;width:7px;height:7px;border-radius:2px;background:var(--accent);transform:rotate(45deg)}
+  .egg{
+    margin-top:6px;padding:13px 15px;border-radius:12px;font-size:14px;line-height:1.7;
+    background:rgba(166,61,47,.06);border:1px dashed var(--red);color:var(--red-deep);
+  }
+  .r-actions{margin-top:26px;display:flex;flex-direction:column;gap:12px}
+  .r-actions .btn{width:100%;padding:14px}
+  .share-tip{margin-top:14px;text-align:center;font-size:12.5px;color:var(--ink-soft);letter-spacing:1px}
+  .toast{
+    position:fixed;left:50%;bottom:36px;transform:translateX(-50%) translateY(20px);
+    background:rgba(42,33,28,.92);color:#fdf6e3;padding:11px 20px;border-radius:999px;
+    font-size:14px;letter-spacing:1px;opacity:0;pointer-events:none;transition:all .3s;z-index:50;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  /* 飘落花瓣 */
+  .petal{position:fixed;top:-30px;z-index:0;pointer-events:none;font-size:20px;opacity:.7;animation:fall linear infinite}
+  @keyframes fall{
+    0%{transform:translateY(-40px) rotate(0deg) translateX(0)}
+    100%{transform:translateY(110vh) rotate(340deg) translateX(40px)}
+  }
+
+  @media (min-width:640px){
+    .page{max-width:620px}
+    .result-card{padding:38px 36px 32px}
+    .hero h1{font-size:34px}
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <!-- 首页 -->
+    <section id="home" class="screen active">
+      <div class="hero">
+        <div class="seal-big">宫</div>
+        <h1>测测你在宫廷剧<br>能活多久</h1>
+        <p class="sub">一入宫门深似海 · 且看你能活几集</p>
+        <div class="meta">
+          <span>40 道生活化题目</span>
+          <span>约 3 分钟</span>
+          <span>结果仅供娱乐</span>
+        </div>
+        <button id="startBtn" class="btn start">开始测试</button>
+      </div>
+    </section>
+
+    <!-- 答题页 -->
+    <section id="quiz" class="screen">
+      <div class="quiz-head">
+        <div class="qn">第 <b id="qNum">1</b> / 40 题</div>
+        <div class="qn" id="catLabel"></div>
+      </div>
+      <div class="progress"><i id="progressFill"></i></div>
+      <div class="qcard">
+        <div class="cat" id="catTag"></div>
+        <div class="qtext" id="qText"></div>
+        <div class="opts" id="opts"></div>
+      </div>
+      <div class="quiz-foot">
+        <button id="prevBtn" class="btn ghost">← 上一题</button>
+      </div>
+    </section>
+
+    <!-- 结果页 -->
+    <section id="result" class="screen">
+      <div class="result-card" id="resultCard"></div>
+      <div class="r-actions">
+        <button id="copyBtn" class="btn">复制我的结局文案</button>
+        <button id="retryBtn" class="btn ghost">再测一次</button>
+      </div>
+      <p class="share-tip">结果卡片适合直接截图，分享到小红书 / 朋友圈</p>
+    </section>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
+<script id="app">
+"use strict";
+
+/* ============ 数据定义 ============ */
+/* 六个性格维度（索引 0-5） */
+const DIMENSIONS = [
+  { name:"心机",  desc:"谋算与城府" },
+  { name:"谨慎",  desc:"自保与警觉" },
+  { name:"情商",  desc:"圆滑与分寸" },
+  { name:"正直",  desc:"真诚与原则" },
+  { name:"野心",  desc:"进取与欲望" },
+  { name:"胆识",  desc:"敢为与决断" }
+];
+
+/* 40 道题：t=题干，o=[选项文本, 维度索引] ×4 */
+const QUESTIONS = [
+  { t:"有人在背后说你坏话，你最先会怎么做？", o:[["表面不动声色，暗中记下，找机会漂亮回击",0],["先多方核实，确认是不是真的再决定",1],["找合适机会坦诚沟通，把误会解开",2],["当面直接问清楚，不憋着",5]] },
+  { t:"深夜收到一条语焉不详的求助消息，你会？", o:[["立刻回拨，并准备赶过去帮忙",5],["先确认对方身份和具体情况",1],["先安抚对方情绪，再问清来龙去脉",2],["截图留证，再慢慢套话确认真假",0]] },
+  { t:"有个能升职、但需要踩别人一脚的机会，你会？", o:[["想办法拿下，机会难得",4],["拒绝，靠踩别人上位不光彩",3],["先掂量风险，看值不值得",1],["不动声色布局，让自己显得名正言顺",0]] },
+  { t:"被当众批评、下不来台时，你通常？", o:[["表面认错，回去把账记下",0],["是我的错我认，不是我的锅就反驳",3],["先顺着台阶下，事后再私下说清",2],["当场怼回去，不能输了气势",5]] },
+  { t:"休闲时你更爱看哪一类内容？", o:[["悬疑、权谋、谍战类",0],["冒险、动作、竞技类",5],["治愈、温情、喜剧类",2],["纪录片、历史正剧类",3]] },
+  { t:"你的社交动态通常是？", o:[["很少发，注重隐私",1],["只发高光时刻，经营人设",4],["常互动点赞，维系关系",2],["想发就发，真实做自己",5]] },
+  { t:"一个秘密到了你这里，你会？", o:[["守口如瓶，绝不外传",1],["不会主动说，但憋着难受",3],["当筹码收着，关键时可能用",0],["只告诉绝对信得过的人",2]] },
+  { t:"进入一个新圈子，你通常？", o:[["快速记住关键人物并搞好关系",2],["先观察，摸清各方关系再行动",1],["主动出击，大方介绍自己",5],["自然相处，不刻意讨好",3]] },
+  { t:"领导交代一件明显不合理的任务，你会？", o:[["敢直接指出问题",5],["先应下，再找理由婉转推掉",1],["拉上别人一起分担，降低风险",0],["用更合理的方式达成目的再反馈",2]] },
+  { t:"被人抢了功劳，你会？", o:[["先收集证据，等最有利时机反击",0],["憋着一口气，下次用更大成果压回去",4],["当场硬刚，把功劳说清楚",5],["私下找对方谈，要个说法",2]] },
+  { t:"面对陌生人多的场合，你？", o:[["游刃有余，能带动气氛",2],["有点紧张，先待在角落观察",1],["毫无压力，主动社交",5],["顺其自然，聊得来就聊",3]] },
+  { t:"玩游戏或下棋，你更看重？", o:[["布局、算计、博弈感",0],["一定要赢，看中名次和段位",4],["敢拼敢冲，追求刺激",5],["和队友配合、过程开心",2]] },
+  { t:"遇到两难选择时，你更倾向？", o:[["凭原则和良心做决定",3],["反复权衡利弊，选风险小的",1],["选收益更大的那个",4],["看哪个对自己长远更有利",0]] },
+  { t:"生气的时候，你通常会？", o:[["表面平静，把账记在心里",0],["就事论事，把我的不满说清楚",3],["先离开现场，让自己冷静",1],["当场发作，气势上不能输",5]] },
+  { t:"你更愿意和什么样的人做朋友？", o:[["会来事、相处舒服的",2],["真诚、靠得住的",3],["有资源、能互相成就的",4],["低调、不惹麻烦的",1]] },
+  { t:"出门前发现外面下雨，你会？", o:[["带伞加外套，做好万全准备",1],["淋点雨没什么，直接出门",5],["打车或叫人来接，不弄湿自己",0],["不纠结，随性自然",3]] },
+  { t:"同事间起了冲突，你通常？", o:[["主动调解，缓和关系",2],["站能让自己获利的一方",4],["帮理不帮亲",3],["不掺和，明哲保身",1]] },
+  { t:"深夜一个人时，你更多感到？", o:[["平静，享受独处",3],["焦虑，觉得自己还不够强",4],["复盘白天，担心哪里没做好",1],["想找人聊聊天",2]] },
+  { t:"你更喜欢的旅行方式？", o:[["说走就走，走小众刺激路线",5],["提前做足攻略，行程安全稳妥",1],["和一群人热闹同行",2],["自己拍板，行程我说了算",4]] },
+  { t:"有人向你打听另一个人的隐私，你会？", o:[["含糊带过，不多嘴",1],["拒绝透露，这是人家的隐私",3],["反问对方，套出更多信息",0],["打圆场，把话题岔开",2]] },
+  { t:"你的目标没达成时，通常归因于？", o:[["我努力还不够，再拼",4],["计划没做周全，下次更稳",1],["运气和时机，问心无愧就好",3],["外部阻力，得换个打法",0]] },
+  { t:"朋友取得大成功，你的第一反应？", o:[["真心高兴，主动祝贺",2],["替他高兴，但也暗暗较劲",4],["好奇他是怎么做到的",1],["替他开心，不比较",3]] },
+  { t:"你的手机相册里大多是？", o:[["和朋友的合照、聚会",2],["生活随拍、风景",3],["工作成果、高光瞬间",4],["有用的截图、证据、备忘",0]] },
+  { t:"团队里来了个能力很强的新人，你会？", o:[["把他当竞争对手，加倍努力",4],["先摸清他的背景和来意",0],["主动示好，拉进自己这边",2],["正常相处，该帮就帮",3]] },
+  { t:"面对规则漏洞，你会？", o:[["巧妙利用漏洞为自己谋利",0],["按规则办事，不钻空子",3],["先观察别人怎么处理",1],["抓住机会，弯道超车",4]] },
+  { t:"被最信任的人背叛，你会？", o:[["冷静复盘，谋划最狠的还击",0],["当面撕破脸，讨个说法",5],["痛苦，但会问清原因、体面了断",3],["从此更谨慎，不再轻易信任",1]] },
+  { t:"你更喜欢哪种桌游或综艺？", o:[["狼人杀、剧本杀（考验算计）",0],["竞技对战、极限挑战",5],["团建互动、温馨治愈",2],["有排名的比赛、竞技类",4]] },
+  { t:"面对一个不熟悉的领域，你？", o:[["先查资料、请教懂行的人",1],["边做边学，敢上手",5],["找机会快速做出成绩证明自己",4],["结交该领域的人脉带路",2]] },
+  { t:"聚会里有人冷场，你通常？", o:[["主动抛话题、活跃气氛",2],["观察谁是焦点，评估关系",0],["顺其自然，不刻意",3],["讲个段子或表演个才艺救场",5]] },
+  { t:"压力大时，你更可能？", o:[["用运动或高强度活动释放",5],["表面镇定，暗自布局应对",0],["找人倾诉、寻求支持",2],["一个人扛，慢慢消化",3]] },
+  { t:"你更相信？", o:[["利益和博弈",0],["情义和原则",3],["规则和证据",1],["实力和野心",4]] },
+  { t:"想学一项新技能，你会优先选？", o:[["能提升身价、带来晋升的",4],["能认识更多人的（社交型）",2],["纯粹感兴趣的，不为功利",3],["能帮我看透他人、掌握主动的",0]] },
+  { t:"你理想中的生活节奏？", o:[["快节奏、不断往上走",4],["稳定可控、有安全感",1],["简单踏实、问心无愧",3],["热闹温暖、有朋友环绕",2]] },
+  { t:"别人向你借钱，你会？", o:[["看情况，量力而行且留字据",1],["能帮就帮，信得过就借",3],["先探清对方真实用途和偿还能力",0],["委婉说明难处，不伤和气",2]] },
+  { t:"面对突发变故，你？", o:[["先冷静分析，稳住阵脚",1],["果断出手，先控制局面",5],["凭直觉和良心做选择",3],["先想清楚对自己影响再行动",0]] },
+  { t:"你如何看待「会哭的孩子有奶吃」？", o:[["认同，该争取就争取",4],["不哭，但会用别的方式拿到",0],["不认同，我靠实力硬刚",5],["会适度表达诉求，掌握分寸",2]] },
+  { t:"你的穿搭与审美偏好？", o:[["低调但精致，藏锋",0],["气场强，显身份",4],["个性鲜明，敢穿",5],["舒适自然，不刻意",3]] },
+  { t:"做重大决定时，你更依赖？", o:[["数据和理性分析",1],["直觉和胆量",5],["多方情报和利弊推演",0],["内心的原则和良心",3]] },
+  { t:"面对权威或上级，你的态度？", o:[["尊重但保持舒服的距离",2],["努力靠近，争取机会",4],["敬畏，谨慎行事",1],["不卑不亢，有底气平等相处",5]] },
+  { t:"如果宫斗剧里只能留一样品质，你选？", o:[["城府和谋算",0],["自保和警觉",1],["人缘和分寸",2],["胆量和决断",5]] }
+];
+
+/* 七种结局原型：向量为六维度权重(0-3) */
+const ARCHETYPES = [
+  {
+    id:"paohui", title:"活不过三集", archetype:"耿直炮灰", badge:"开局出局", episodes:"第 1～3 集就领盒饭",
+    seal:"炮", emoji:"🪦", accent:"#b0483a",
+    tagline:"「我命由我不由天——就是活得短了点。」",
+    traits:["真诚坦率","藏不住话","容易轻信","情绪写在脸上"],
+    reason:"你的「正直」与「胆识」拉满，却几乎没有「心机」与「谨慎」。在人人八百个心眼子的后宫里，你把真心当通行证、把情绪当扬声器——是个好人，只是命短了点。",
+    strengths:["人缘意外地好，总有人真心护你","真诚是你的滤镜，容易收获挚友","坦率让你反而活得像个人"],
+    egg:"若穿越成功，建议第一时间抱住「低调保命王」的大腿，能多活二十集。",
+    v:[0,0,1,3,0,2]
+  },
+  {
+    id:"xiaotouming", title:"活到中期", archetype:"边缘小透明", badge:"中期下线", episodes:"第 15 集前后悄然下线",
+    seal:"淡", emoji:"🍃", accent:"#7f9171",
+    tagline:"「不争不抢，活成一集人畜无害的背景板。」",
+    traits:["随和好相处","不爱站队","情绪稳定","存在感偏低"],
+    reason:"你的各项性格都挺均衡，没有致命短板，但也缺少杀出重围的锋芒。在宫斗剧里，你大概率是个讨喜的小配角——没什么坏处，也难有大戏份。",
+    strengths:["情绪稳定是乱局中的稀缺品","不树敌，关键时总有人拉你一把","低调是最管用的保护色"],
+    egg:"关于你，观众弹幕最多的一条是：这个小透明能不能给点戏份？",
+    v:[1,2,2,2,1,1]
+  },
+  {
+    id:"shishi", title:"打入冷宫", archetype:"失势凤凰", badge:"高开低走", episodes:"风光一时，最终失势冷宫",
+    seal:"凤", emoji:"🥀", accent:"#c17a2e",
+    tagline:"「我曾坐拥整个后宫，如今只剩冷宫一扇窗。」",
+    traits:["野心勃勃","心机深沉","胆大敢赌","不愿低头"],
+    reason:"「野心」「心机」「胆识」你都不缺，唯独缺了「谨慎」和「正直」。你敢赌敢搏，风光一时，可锋芒太露、树敌太多，最终从高位跌落。",
+    strengths:["手腕与魄力是实打实的","跌倒后仍有机会卷土重来","补上「谨慎」这块拼图，你就是下一任大女主"],
+    egg:"冷宫其实是宫斗剧的「进修班」，多少王者都是从这儿爬出来的。",
+    v:[2,0,1,0,3,2]
+  },
+  {
+    id:"baoming", title:"苟到大结局", archetype:"低调保命王", badge:"笑到最后", episodes:"稳稳活到大结局，全须全尾",
+    seal:"稳", emoji:"🏮", accent:"#4a7c6f",
+    tagline:"「不站队、不冒头、不接锅——能苟，也是一种实力。」",
+    traits:["谨慎自保","情商在线","善于藏拙","求生欲极强"],
+    reason:"「谨慎」是你的核心天赋，「情商」与「心机」也在线，最重要的是你几乎「零野心」。在宫斗剧里，不争才是最大的安全牌，而你深谙此道。",
+    strengths:["你是全剧活得最稳的人","对局势嗅觉极准，总能提前避险","关键时刻能精准站队，却不显山露水"],
+    egg:"大结局大家才发现，你早就把身家安全转移到了宫外。",
+    v:[2,3,2,2,0,1]
+  },
+  {
+    id:"jiangxing", title:"血战到底", archetype:"忠勇将星", badge:"大结局高光", episodes:"凭硬实力血战到大结局",
+    seal:"勇", emoji:"⚔️", accent:"#3f5d8c",
+    tagline:"「我凭一身正气和硬实力，硬刚到大结局。」",
+    traits:["一身正气","敢作敢当","重情重义","特别能扛事"],
+    reason:"「正直」与「胆识」是你的底色，还有不错的「谨慎」兜底。你不屑阴谋，靠真本事和硬骨头杀出一条血路，是宫斗剧里罕见的「正面角色活到最后」的范本。",
+    strengths:["人格魅力极强，能聚拢一批死忠","真正的危机面前，你是最靠得住的盟友","反派往往不敢轻易动你这种「硬茬」"],
+    egg:"编剧本想让你下线，但你的观众缘实在太好，硬是改了剧本。",
+    v:[0,2,1,3,1,3]
+  },
+  {
+    id:"danszhu", title:"逆袭登顶", archetype:"天命大女主 / 大男主", badge:"终极赢家", episodes:"活到大结局，还逆袭上位",
+    seal:"赢", emoji:"👑", accent:"#9a1f1a",
+    tagline:"「从最底层到最高位，我这一路，全是算计与野心。」",
+    traits:["心机深沉","野心爆棚","胆识过人","情商在线"],
+    reason:"你的「心机」「野心」「胆识」全面在线，「情商」还帮你稳住了人脉。你是天生的宫斗玩家——能忍、能算、能狠、还能装。这种配置，基本就是主角模板。",
+    strengths:["极擅长隐忍与布局","能在最不利的局面里找到翻盘点","你的狠，通常只用在刀刃上"],
+    egg:"你走到今天，脚下每一步，都是别人输给你的「剧本」。",
+    v:[3,1,2,0,3,2]
+  },
+  {
+    id:"qingxing", title:"主动退隐", archetype:"人间清醒", badge:"全剧存活 · 自选下线", episodes:"全剧存活，主动退场",
+    seal:"明", emoji:"🕊️", accent:"#4f8a6d",
+    tagline:"「我看透了这局棋，也看开了这盘输赢。」",
+    traits:["情商极高","内心通透","有原则不贪心","懂得收手"],
+    reason:"你的「情商」与「正直」双高，「心机」与「谨慎」也不弱，却几乎没有「野心」。你完全有能力去争，却主动选择不争——在宫斗剧里，这种「有实力却不下场」的人，往往活得最通透、最长久。",
+    strengths:["拥有顶级的自控与分寸感","看人看事极准，几乎从不入局","你的离开不是认输，而是最高明的自保"],
+    egg:"你退隐之后，江湖上仍流传着你的传说——「那个主动下桌的人，才是真正的赢家。」",
+    v:[2,2,3,3,0,1]
+  }
+];
+
+/* ============ 评分逻辑 ============ */
+function maxPerDim(){
+  const m=[0,0,0,0,0,0];
+  for(const q of QUESTIONS) for(const o of q.o) m[o[1]]++;
+  return m;
+}
+
+function scoreProfile(answers){
+  const s=[0,0,0,0,0,0];
+  for(const a of answers){ if(a!=null && a>=0) s[a]++; }
+  return s;
+}
+
+function norm(v){
+  let n=0; for(const x of v) n+=x*x;
+  n=Math.sqrt(n)||1;
+  return v.map(x=>x/n);
+}
+
+function cosine(a,b){
+  const A=norm(a), B=norm(b);
+  let d=0; for(let i=0;i<A.length;i++) d+=A[i]*B[i];
+  return d;
+}
+
+function computeResult(scores){
+  const sims=ARCHETYPES.map((a,i)=>({i, cos:cosine(scores,a.v)}));
+  sims.sort((x,y)=>y.cos-x.cos);
+  const top=sims[0], second=sims[1];
+  const confidence=Math.round(100 - (1-top.cos)*62); // 约 60~100
+  return { index:top.i, second:second.i, confidence, sims:sims.map(s=>s.cos) };
+}
+
+/* ============ DOM 交互 ============ */
+if(typeof document!=="undefined"){
+  (function init(){
+    const $=id=>document.getElementById(id);
+    const home=$("home"), quiz=$("quiz"), result=$("result");
+    const startBtn=$("startBtn"), prevBtn=$("prevBtn");
+    const qNum=$("qNum"), catLabel=$("catLabel"), catTag=$("catTag"), qText=$("qText"), opts=$("opts");
+    const progressFill=$("progressFill"), resultCard=$("resultCard");
+    const copyBtn=$("copyBtn"), retryBtn=$("retryBtn"), toast=$("toast");
+
+    const CATS=["日常习惯","处事方式","社交模式","情绪反应","兴趣偏好"];
+    let idx=0, answers=Array(QUESTIONS.length).fill(null);
+    let timer=null;
+
+    function show(s){ [home,quiz,result].forEach(el=>el.classList.remove("active")); s.classList.add("active"); window.scrollTo({top:0,behavior:"smooth"}); }
+
+    function render(){
+      const q=QUESTIONS[idx];
+      qNum.textContent=idx+1;
+      catLabel.textContent=CATS[idx%5];
+      catTag.textContent=CATS[idx%5]+" · 第 "+(idx+1)+" 题";
+      qText.textContent=q.t;
+      opts.innerHTML="";
+      q.o.forEach((opt,oi)=>{
+        const b=document.createElement("button");
+        b.className="option";
+        const key=document.createElement("span"); key.className="key"; key.textContent=String.fromCharCode(65+oi);
+        const span=document.createElement("span"); span.textContent=opt[0];
+        b.appendChild(key); b.appendChild(span);
+        if(answers[idx]===opt[1]) b.classList.add("selected");
+        b.onclick=()=>select(oi,opt[1]);
+        opts.appendChild(b);
+      });
+      prevBtn.disabled = idx===0;
+      prevBtn.style.opacity = idx===0?0.4:1;
+      const answered=answers.filter(a=>a!=null).length;
+      progressFill.style.width = (answered/QUESTIONS.length*100)+"%";
+    }
+
+    function select(oi,dim){
+      answers[idx]=dim;
+      Array.from(opts.children).forEach((el,i)=>el.classList.toggle("selected", i===oi));
+      progressFill.style.width = (answers.filter(a=>a!=null).length/QUESTIONS.length*100)+"%";
+      clearTimeout(timer);
+      timer=setTimeout(()=>{
+        if(idx===QUESTIONS.length-1){ finish(); }
+        else { idx++; render(); }
+      }, 420);
+    }
+
+    function finish(){
+      const scores=scoreProfile(answers);
+      const r=computeResult(scores);
+      const a=ARCHETYPES[r.index];
+      document.documentElement.style.setProperty("--accent", a.accent);
+      const maxPct=maxPerDim();
+      const dimBars=DIMENSIONS.map((d,i)=>{
+        const pct=Math.round(scores[i]/maxPct[i]*100);
+        return `<div class="dim-row"><span class="dn">${d.name}</span><span class="bar"><i style="background:${a.accent};width:${pct}%"></i></span><span class="dv">${pct}%</span></div>`;
+      }).join("");
+      resultCard.innerHTML=`
+        <div class="r-top">
+          <div class="seal">${a.seal}</div>
+          <div class="badge">${a.badge}</div>
+          <h2>${a.emoji} ${a.title}</h2>
+          <div class="archetype">你的宫斗原型：${a.archetype}</div>
+          <div class="episodes">存活时长：${a.episodes}</div>
+        </div>
+        <div class="tagline">${a.tagline}</div>
+        <div class="match">与「${a.archetype}」契合度 <b>${r.confidence}%</b>　·　隐藏人格「${ARCHETYPES[r.second].archetype}」</div>
+        <div class="dims"><h3>性格画像</h3>${dimBars}</div>
+        <div class="sec"><h3>性格特点</h3><div class="chips">${a.traits.map(t=>`<span>${t}</span>`).join("")}</div></div>
+        <div class="sec"><h3>匹配理由</h3><p class="reason">${a.reason}</p></div>
+        <div class="sec"><h3>隐藏优势</h3><ul class="list">${a.strengths.map(s=>`<li>${s}</li>`).join("")}</ul></div>
+        <div class="sec"><h3>趣味彩蛋</h3><div class="egg">${a.egg}</div></div>
+      `;
+      spawnPetals();
+      show(result);
+    }
+
+    function start(){ answers=Array(QUESTIONS.length).fill(null); idx=0; show(quiz); render(); }
+    function retry(){ clearPetals(); show(home); }
+
+    startBtn.onclick=start;
+    retryBtn.onclick=retry;
+    prevBtn.onclick=()=>{ if(idx>0){ clearTimeout(timer); idx--; render(); } };
+
+    copyBtn.onclick=()=>{
+      const a=ARCHETYPES[computeResult(scoreProfile(answers)).index];
+      const txt=`【测测你在宫廷剧能活多久】\n我的结局是「${a.title}」· ${a.archetype}\n${a.tagline}\n存活时长：${a.episodes}`;
+      const done=()=>{ toast.textContent="结局文案已复制 ✓"; toast.classList.add("show"); setTimeout(()=>toast.classList.remove("show"),1600); };
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(done); }
+      else { try{ const t=document.createElement("textarea"); t.value=txt; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }catch(e){} done(); }
+    };
+
+    /* 飘落花瓣 */
+    let petals=[];
+    function spawnPetals(){
+      clearPetals();
+      const chars=["❀","✿","🌸"];
+      for(let i=0;i<8;i++){
+        const p=document.createElement("div");
+        p.className="petal"; p.textContent=chars[i%3];
+        p.style.left=Math.random()*100+"vw";
+        p.style.animationDuration=(6+Math.random()*6)+"s";
+        p.style.animationDelay=(-Math.random()*8)+"s";
+        p.style.fontSize=(14+Math.random()*14)+"px";
+        document.body.appendChild(p); petals.push(p);
+      }
+    }
+    function clearPetals(){ petals.forEach(p=>p.remove()); petals=[]; }
+  })();
+}
+</script>
+</body>
+</html>
